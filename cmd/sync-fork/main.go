@@ -52,10 +52,9 @@ func fetchUpstream(settings Settings) error {
     return nil
 }
 
-func checkoutMaster(settings Settings) error {
-    git := exec.Command("git", "checkout", settings.masterName)
-    output, err := git.CombinedOutput()
-    log.Printf("%s\n", output)
+func checkoutBranch(branchName string) error {
+    git := exec.Command("git", "checkout", branchName)
+    err := git.Run()
     if err != nil {
         return err
     }
@@ -100,16 +99,32 @@ func parseCommandLine() Settings {
     return settings
 }
 
+func getCurrentBranch() (error, string) {
+    git := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+    output, err := git.CombinedOutput()
+    outputString := fmt.Sprintf("%s", output)
+    if err != nil {
+        return err, outputString
+    }
+    return nil, strings.TrimSpace(outputString)
+}
+
 func main() {
     settings := parseCommandLine()
     log.Printf("Syncing with fork:\n\tUpstream: %s\n\tMaster: %s\n\tPush: %t\n", settings.upstreamName, settings.masterName, !settings.doNotPush)
 
-    err := fetchUpstream(settings)
+    err, previousBranch := getCurrentBranch()
     failOnError(err)
-    err = checkoutMaster(settings)
+
+    err = fetchUpstream(settings)
+    failOnError(err)
+    err = checkoutBranch(settings.masterName)
     failOnError(err)
     err = mergeUpstreamMaster(settings)
     failOnError(err)
     err = pushOrigin(settings)
+    failOnError(err)
+
+    err = checkoutBranch(previousBranch)
     failOnError(err)
 }
