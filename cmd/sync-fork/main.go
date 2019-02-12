@@ -1,11 +1,16 @@
 package main;
 
 import (
+    "flag"
     "fmt"
     "log"
     "os/exec"
     "strings"
 )
+
+type Settings struct {
+    doNotPush bool
+}
 
 func failOnError(err error) {
     if err == nil {
@@ -75,14 +80,18 @@ func pushOrigin() error {
     return nil
 }
 
+func parseCommandLine() Settings {
+    settings := Settings{}
+    flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a succesful sync to origin branch.")
+    flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a succesful sync to origin branch.")
+    flag.Parse()
+    return settings
+}
+
 func main() {
     log.Println("Syncing with upstream...")
-    // TODO allow configuration of folder to run in
-    // TODO allow configuration of upstream name
-    // TODO allow configuration of origin name
-    // TODO allow configuration of master branch name
-    // TODO add option to recursively search for git repositories in subfolders
-    // TODO make push operation optional
+
+    settings := parseCommandLine()
 
     err := fetchUpstream()
     failOnError(err)
@@ -90,6 +99,11 @@ func main() {
     failOnError(err)
     err = mergeUpstreamMaster()
     failOnError(err)
-    err = pushOrigin()
-    failOnError(err)
+    if !settings.doNotPush {
+        log.Println("Pushing to origin.")
+        err = pushOrigin()
+        failOnError(err)
+    } else {
+        log.Println("Not pushing to origin because no-push was specified")
+    }
 }

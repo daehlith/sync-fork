@@ -7,6 +7,11 @@
 $ sync-fork
 ```
 
+By default, sync-fork will push a successful merge to the origin repository. It is possible to avoid this by specifying the `--np` / `--no-push` switch:
+```
+$ sync-fork --np
+```
+
 ### Random bits and pieces
 
 The usual process for syncing a fork involves:
