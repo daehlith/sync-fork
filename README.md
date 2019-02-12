@@ -17,6 +17,11 @@ If you happen to use a remote name for your upstream repository other than "upst
 $ sync-fork --upstream actual-upstream-name
 ```
 
+Similarly it is also possible to specify the name of the master branch via the `--m` / `--master` switch, should it not be "master":
+```
+$ sync-fork --m the-real-master-branch-name
+```
+
 ### Random bits and pieces
 
 The usual process for syncing a fork involves:
