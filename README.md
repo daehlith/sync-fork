@@ -12,6 +12,11 @@ By default, sync-fork will push a successful merge to the origin repository. It 
 $ sync-fork --np
 ```
 
+If you happen to use a remote name for your upstream repository other than "upstream" you can specify this via the `--u` / `--upstream` switch:
+```
+$ sync-fork --upstream actual-upstream-name
+```
+
 ### Random bits and pieces
 
 The usual process for syncing a fork involves:

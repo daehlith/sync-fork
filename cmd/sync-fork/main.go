@@ -10,6 +10,7 @@ import (
 
 type Settings struct {
     doNotPush bool
+    upstreamName string
 }
 
 func failOnError(err error) {
@@ -19,7 +20,7 @@ func failOnError(err error) {
     log.Fatal(err)
 }
 
-func fetchUpstream() error {
+func fetchUpstream(settings Settings) error {
     git := exec.Command("git", "remote")
     output, err := git.CombinedOutput()
 
@@ -31,14 +32,14 @@ func fetchUpstream() error {
     remotes := strings.Split(outputStr, "\n")
     hasOrigin := false
     for _, remote := range remotes {
-        if remote == "upstream" {
+        if remote == settings.upstreamName {
             hasOrigin = true
             break
         }
     }
 
     if !hasOrigin {
-        return fmt.Errorf("No upstream repository found!")
+        return fmt.Errorf("Could not find upstream repository with name %s", settings.upstreamName)
     }
 
     git = exec.Command("git", "fetch", "upstream")
@@ -84,16 +85,17 @@ func parseCommandLine() Settings {
     settings := Settings{}
     flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a succesful sync to origin branch.")
     flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a succesful sync to origin branch.")
+    flag.StringVar(&settings.upstreamName, "upstream", "upstream", "Name of the upstream remote entry, default: 'upstream'")
+    flag.StringVar(&settings.upstreamName, "u", "upstream", "Name of the upstream remote entry, default: 'upstream'")
     flag.Parse()
     return settings
 }
 
 func main() {
-    log.Println("Syncing with upstream...")
-
     settings := parseCommandLine()
+    log.Printf("Syncing with fork:\n\tUpstream: %s\n\tPush: %t\n", settings.upstreamName, !settings.doNotPush)
 
-    err := fetchUpstream()
+    err := fetchUpstream(settings)
     failOnError(err)
     err = checkoutMaster()
     failOnError(err)
