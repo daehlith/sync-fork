@@ -8,6 +8,7 @@ deploy:
   api_key:
     secure: WScSUNSE+EK1VlB2ANYspvO92iwO+PGxB2KupFgrsd+KjCJemSmy4QKNt71g+jeL4DpGuIXbDIIh3CbdssWeFFFN8ZM+g0GHEQI9K8XAaoazsjZycG1YYvIWB6RuS0uzcV/nfImpMvWxMtjgat95Jdnr1Kp17I9HZ/58io8UO+J7w9DCJArgnPGMdsbqZTlkySS8HGX/K42ReAqimntdUSZqXyucSqzNyD3/lOjl9pEkrJv8ihh5vTr12qe+zlxMJyJVfybpIkU5HgBB71+BzOzOyu6UWN+ybEUIVbbX2VfmZnm4dLMq/4atnymJGPQJpUGzfjUM1z78kcrKF4KS11H7XwW4aHtlBOP1NGas4UziW9BNDhVq1GJSyp7LgbS79zsnqaoRYhL23g+VBbtgrLXmHnokZeu69YbaQqSvGIU7+XqWCLXHUeFEGpbuWhUyrhKsMgUMGpr98K8oQkIzJhSnAtCszBdDlR/vndlZ4oGihN+tTmAsjPJ6beDaQNw8Sbl0/5BrY031eq/Vs8RUiVheWfuJ2Wf2nBWoJ2+jE0n4srDs/iGuZDSYmJtLE6ZV20Z1m09OEKGHuNI2GRYz0cXGJ/2r8wYTkc5V8N1N3zk8jPTbYiDBp6RqW1X8Rt8jUlsqd4zuKHtPqX+t74kzymGTQkxn6kmB3hMGh4ALtcE=
   file: sync-fork
+  skip_cleanup: true
   on:
     repo: daehlith/sync-fork
     tags: true
