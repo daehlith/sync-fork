@@ -73,7 +73,12 @@ func mergeUpstreamMaster(settings Settings) error {
     return nil
 }
 
-func pushOrigin() error {
+func pushOrigin(settings Settings) error {
+    if settings.doNotPush {
+        log.Println("Not pushing to origin because no-push was specified")
+        return nil
+    }
+    log.Println("Pushing to origin.")
     git := exec.Command("git", "push")
     output, err := git.CombinedOutput()
     log.Printf("%s\n", output)
@@ -85,8 +90,8 @@ func pushOrigin() error {
 
 func parseCommandLine() Settings {
     settings := Settings{}
-    flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a succesful sync to origin branch.")
-    flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a succesful sync to origin branch.")
+    flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a succesful sync to origin repository.")
+    flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a succesful sync to origin repository.")
     flag.StringVar(&settings.masterName, "master", "master", "Name of the master branch, default: 'master'")
     flag.StringVar(&settings.masterName, "m", "master", "Name of the master branch, default: 'master'")
     flag.StringVar(&settings.upstreamName, "upstream", "upstream", "Name of the upstream remote entry, default: 'upstream'")
@@ -105,11 +110,6 @@ func main() {
     failOnError(err)
     err = mergeUpstreamMaster(settings)
     failOnError(err)
-    if !settings.doNotPush {
-        log.Println("Pushing to origin.")
-        err = pushOrigin()
-        failOnError(err)
-    } else {
-        log.Println("Not pushing to origin because no-push was specified")
-    }
+    err = pushOrigin(settings)
+    failOnError(err)
 }

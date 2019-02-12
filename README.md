@@ -22,21 +22,6 @@ Similarly it is also possible to specify the name of the master branch via the `
 $ sync-fork --m the-real-master-branch-name
 ```
 
-### Random bits and pieces
-
-The usual process for syncing a fork involves:
-
-```
-$ git fetch upstream
-...
-$ git checkout master
-...
-$ git merge upstream/master
-...
-# and optionally:
-$ git push
-```
-
 Things to consider:
 - ensure we are running it on a git repository
 - make sure the assumptions for the fork exist (e.g. remote that we can read from, called upstream)
