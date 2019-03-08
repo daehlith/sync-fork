@@ -1,9 +1,9 @@
-build: off
+image: ubuntu
 
 stack: go 1.11.2
 
 environment:
-  - GO111MODULE=on
+  GO111MODULE: on
 
 before_build:
   - go mod download
