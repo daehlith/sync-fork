@@ -1,0 +1,14 @@
+build: off
+
+stack: go 1.11.2
+
+environment:
+  - GO111MODULE=on
+
+before_build:
+  - go mod download
+
+build_script:
+  - env GOOS=linux go build -o sync-fork-linux-amd64 cmd/sync-fork/main.go
+  - env GOOS=darwin go build -o sync-fork-darwin-amd64 cmd/sync-fork/main.go
+  - env GOOS=windows go build -o sync-fork-windows-amd64.exe cmd/sync-fork/main.go
