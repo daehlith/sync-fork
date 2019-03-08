@@ -12,3 +12,8 @@ build_script:
   - env GOOS=linux go build -o sync-fork-linux-amd64 cmd/sync-fork/main.go
   - env GOOS=darwin go build -o sync-fork-darwin-amd64 cmd/sync-fork/main.go
   - env GOOS=windows go build -o sync-fork-windows-amd64.exe cmd/sync-fork/main.go
+
+artifacts:
+  - path: sync-fork-linux-amd64
+  - path: sync-fork-darwin-amd64
+  - path: sync-fork-windows-amd64.exe
