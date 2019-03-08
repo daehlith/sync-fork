@@ -17,3 +17,21 @@ artifacts:
   - path: sync-fork-linux-amd64
   - path: sync-fork-darwin-amd64
   - path: sync-fork-windows-amd64.exe
+
+before_deploy:
+  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+deploy:
+  release: "${APPVEYOR_PROJECT_NAME} ${APPVEYOR_REPO_TAG_NAME}"
+  description: ${CHANGELOG}
+  provider: GitHub
+  auth_token:
+    secure: NYUKWXN19TyDSzpzHb1UePVAfbIpKpQcNZWMKJCObtHQ7d+ccGeso7fesC4XNhS6
+  artifact:
+    - sync-fork-darwin-amd64
+    - sync-fork-linux-amd64
+    - sync-fork-windows-amd64.exe
+  draft: false
+  prerelease: false
+  on:
+    branch: master
+    APPVEYOR_REPO_TAG: true
