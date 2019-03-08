@@ -21,13 +21,14 @@ artifacts:
 before_deploy:
   - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 deploy:
-  release: "${APPVEYOR_PROJECT_NAME} ${APPVEYOR_REPO_TAG_NAME}"
+  release: "sync-fork ${APPVEYOR_REPO_TAG_NAME}"
   description: ${CHANGELOG}
   provider: GitHub
   auth_token:
     secure: NYUKWXN19TyDSzpzHb1UePVAfbIpKpQcNZWMKJCObtHQ7d+ccGeso7fesC4XNhS6
   draft: false
   prerelease: false
+  artifact: /sync-fork-.*-amd64-.*/
   on:
     branch: master
     APPVEYOR_REPO_TAG: true
