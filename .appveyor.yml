@@ -4,30 +4,35 @@ stack: go 1.11.2
 
 environment:
   GO111MODULE: on
+  matrix:
+    - GOOS: linux
+    - GOOS: darwin
+    - GOOS: windows
+      EXE: .exe
+
+matrix:
+  fast_finish: true
 
 before_build:
   - go mod download
+  - mkdir -p .build
 
 build_script:
-  - env GOOS=linux go build -o sync-fork-linux-amd64 cmd/sync-fork/main.go
-  - env GOOS=darwin go build -o sync-fork-darwin-amd64 cmd/sync-fork/main.go
-  - env GOOS=windows go build -o sync-fork-windows-amd64.exe cmd/sync-fork/main.go
+  - go build -o .build/${APPVEYOR_REPO_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
 
 artifacts:
-  - path: sync-fork-linux-amd64
-  - path: sync-fork-darwin-amd64
-  - path: sync-fork-windows-amd64.exe
+  - path: .build/${APPVEYOR_REPO_NAME}-${GOOS}-amd64${EXE}
+    name: Releases
 
 before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 deploy:
-  release: "sync-fork ${APPVEYOR_REPO_TAG_NAME}"
   description: ${CHANGELOG}
   provider: GitHub
+  artifact: /.*-amd64.*/
   auth_token:
     secure: NYUKWXN19TyDSzpzHb1UePVAfbIpKpQcNZWMKJCObtHQ7d+ccGeso7fesC4XNhS6
   draft: false
   prerelease: false
-  artifact: /sync-fork-.*-amd64-.*/
   on:
-    APPVEYOR_REPO_TAG: true
+    tag: ${APPVEYOR_REPO_TAG_NAME}
