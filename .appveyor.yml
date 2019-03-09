@@ -16,7 +16,7 @@ matrix:
 before_build:
   - go mod download
   - mkdir -p .build
-  - sh: export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 
 build_script:
   - echo "changelog = ${CHANGELOG}"
@@ -30,7 +30,7 @@ artifacts:
     name: Releases
 
 before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 deploy:
   description: ${CHANGELOG}
   provider: GitHub
