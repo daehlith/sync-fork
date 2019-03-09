@@ -21,7 +21,7 @@ build_script:
   - go build -o .build/${APPVEYOR_REPO_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
 
 artifacts:
-  - path: .build/${APPVEYOR_REPO_NAME}-${GOOS}-amd64${EXE}
+  - path: .build/*-amd64*
     name: Releases
 
 before_deploy:
