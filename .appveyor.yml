@@ -18,14 +18,18 @@ before_build:
   - mkdir -p .build
 
 build_script:
-  - go build -o .build/${APPVEYOR_REPO_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
+  - echo "tag name = ${APPVEYOR_REPO_TAG_NAME}"
+  - echo "binary name = ${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE}"
+  - go build -o .build/${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
 
 artifacts:
   - path: .build/*-amd64*
     name: Releases
 
 before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+  - echo "Changelog = ${CHANGELOG}"
+  - env
 deploy:
   description: ${CHANGELOG}
   provider: GitHub
@@ -35,4 +39,4 @@ deploy:
   draft: false
   prerelease: false
   on:
-    tag: ${APPVEYOR_REPO_TAG_NAME}
+    APPVEYOR_REPO_TAG: true
