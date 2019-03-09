@@ -16,14 +16,11 @@ matrix:
 before_build:
   - go mod download
   - mkdir -p .build
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 
 build_script:
-  - echo "changelog = ${CHANGELOG}"
   - echo "tag name = ${APPVEYOR_REPO_TAG_NAME}"
   - echo "binary name = ${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE}"
   - go build -o .build/${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
-  - ls -al .build
 
 artifacts:
   - path: .build/*-amd64*
