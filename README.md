@@ -24,6 +24,17 @@ Similarly it is also possible to specify the name of the master branch via the `
 $ sync-fork --m the-real-master-branch-name
 ```
 
+### Contributing
+
+#### Creating a new release
+
+Simply tag the `master` branch commit to release from. Then push said tag to GitHub. The CI pipeline will pick it up and generate a new release, including changelog generation.
+```bash
+$ git checkout master
+$ git tag 0.3.4
+$ git push origin 0.3.4
+```
+
 Things to consider:
 - ensure we are running it on a git repository
 - make sure the assumptions for the fork exist (e.g. remote that we can read from, called upstream)

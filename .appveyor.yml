@@ -18,8 +18,7 @@ before_build:
   - mkdir -p .build
 
 build_script:
-  - echo "tag name = ${APPVEYOR_REPO_TAG_NAME}"
-  - echo "binary name = ${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE}"
+  - export CHANGELOG=$(git log ${APPVEYOR_REPO_TAG_NAME}^..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | tr '\n' ' ')
   - go build -o .build/${APPVEYOR_PROJECT_NAME}-${GOOS}-amd64${EXE} cmd/sync-fork/main.go
 
 artifacts:
@@ -27,16 +26,18 @@ artifacts:
     name: Releases
 
 before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${APPVEYOR_REPO_TAG_NAME}^")..$APPVEYOR_REPO_TAG_NAME --pretty=format:'<li> <a href="http://github.com/daehlith/sync-fork/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
-  - echo "Changelog = ${CHANGELOG}"
-  - env
+  - echo Changelog = ${CHANGELOG}
 deploy:
-  description: ${CHANGELOG}
-  provider: GitHub
-  artifact: /.*-amd64.*/
-  auth_token:
-    secure: NYUKWXN19TyDSzpzHb1UePVAfbIpKpQcNZWMKJCObtHQ7d+ccGeso7fesC4XNhS6
-  draft: false
-  prerelease: false
-  on:
-    APPVEYOR_REPO_TAG: true
+  - provider: GitHub
+    force_update: true
+    description: |
+      ### Changes:
+      ${CHANGELOG}
+    artifact: /.*-amd64.*/
+    auth_token:
+      secure: NYUKWXN19TyDSzpzHb1UePVAfbIpKpQcNZWMKJCObtHQ7d+ccGeso7fesC4XNhS6
+    draft: false
+    prerelease: false
+    on:
+      branch: master
+      APPVEYOR_REPO_TAG: true
