@@ -89,8 +89,8 @@ func pushOrigin(settings Settings) error {
 
 func parseCommandLine() Settings {
 	settings := Settings{}
-	flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a succesful sync to origin repository.")
-	flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a succesful sync to origin repository.")
+	flag.BoolVar(&settings.doNotPush, "no-push", false, "Automatically push a successful sync to origin repository.")
+	flag.BoolVar(&settings.doNotPush, "np", false, "Automatically push a successful sync to origin repository.")
 	flag.StringVar(&settings.masterName, "master", "master", "Name of the master branch, default: 'master'")
 	flag.StringVar(&settings.masterName, "m", "master", "Name of the master branch, default: 'master'")
 	flag.StringVar(&settings.upstreamName, "upstream", "upstream", "Name of the upstream remote entry, default: 'upstream'")
