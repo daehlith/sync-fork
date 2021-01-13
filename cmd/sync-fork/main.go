@@ -44,7 +44,7 @@ func fetchUpstream(settings Settings) error {
 	}
 
 	git = exec.Command("git", "fetch", settings.upstreamName)
-	output, err = git.CombinedOutput()
+	_, err = git.CombinedOutput()
 	if err != nil {
 		return err
 	}
