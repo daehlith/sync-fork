@@ -11,21 +11,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        include:
-          - os: macos-latest
-            GOOS: darwin
-            GOARCH: amd64
-            SUFFIX: ""
-          - os: ubuntu-latest
-            GOOS: linux
-            GOARCH: amd64
-            SUFFIX: ""
-          - os: windows-latest
-            GOOS: windows
-            GOARCH: amd64
-            SUFFIX: .exe
-    runs-on: ${{ matrix.os }}
+        GOOS: [darwin, linux, windows]
+        GOARCH: [amd64]
+    runs-on: ubuntu-latest
+    env:
+      artifact_name: sync-fork-${{matrix.GOARCH}}-${{matrix.GOOS}}
     steps:
       - uses: actions/checkout@v2
       - name: setup Go
@@ -37,4 +27,7 @@ jobs:
         with:
           version: v1.35
       - name: compile
-        run: go build -o .build/sync-fork-${{matrix.GOARCH}}-${{matrix.GOOS}}${{matrix.SUFFIX}} cmd/sync-fork/main.go
+        run: go build -o .build/${{env.artifact_name}} cmd/sync-fork/main.go
+      - name: Add .exe for Windows
+        if: matrix.GOOS == 'windows'
+        run: mv .build/${{env.artifact_name}} .build/${{env.artifact_name}}.exe
