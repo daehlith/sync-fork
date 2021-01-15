@@ -1,0 +1,39 @@
+name: Build
+on:
+  push:
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        GOOS: [darwin, linux, windows]
+        GOARCH: [amd64]
+    runs-on: ubuntu-latest
+    env:
+      artifact_name: sync-fork-${{matrix.GOARCH}}-${{matrix.GOOS}}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.15.x"
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.35
+      - name: Compile
+        run: go build -o .build/${{env.artifact_name}} cmd/sync-fork/main.go
+      - name: Add .exe for Windows
+        if: matrix.GOOS == 'windows'
+        run: mv .build/${{env.artifact_name}} .build/${{env.artifact_name}}.exe
+      - name: Publish artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.artifact_name}}
+          path: .build

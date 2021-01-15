@@ -1,7 +1,7 @@
 # sync-fork
 > Small utility to keep a fork in sync with its upstream repository
 
-[![Build status](https://ci.appveyor.com/api/projects/status/3kv7irx44qka3vsn?svg=true)](https://ci.appveyor.com/project/daehlith/sync-fork)
+![Build status](https://github.com/daehlith/sync-fork/workflows/Build/badge.svg)
 
 ### Usage
 
